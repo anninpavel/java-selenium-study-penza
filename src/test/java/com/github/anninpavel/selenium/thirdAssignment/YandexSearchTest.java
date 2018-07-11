@@ -32,7 +32,7 @@ import org.testng.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Pavel Annin (https://github.com/anninpavel).
@@ -84,8 +84,7 @@ public class YandexSearchTest {
         queryInput.sendKeys("погода пенза");
 
         final var suggestionText = driver.findElements(By.className("suggest2-item__text")).get(0);
-        final var indexSubstring = suggestionText.getText().toLowerCase().indexOf("пенза");
-
-        assertNotEquals(indexSubstring, -1, "Поиск индекса подстроки в первом результате предложения");
+        assertTrue(suggestionText.getText().toLowerCase().contains("пенза"),
+                "Поиск подстроки в первом результате предложения");
     }
 }
