@@ -2,9 +2,6 @@
 
 The repository contains assignments on Selenium in the Java programming language.
 
-## Assignments
-* [Third Assignment](src/test/java/com/github/anninpavel/selenium/thirdAssignment)
-
 ## License
 MIT License
 

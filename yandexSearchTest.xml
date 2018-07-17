@@ -25,18 +25,17 @@
   -->
 
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-
 <suite name="YandexSearchTest" parallel="tests" thread-count="2">
     <test name="ChromeTest">
         <parameter name="driverType" value="chrome"/>
         <classes>
-            <class name="com.github.anninpavel.selenium.thirdAssignment.YandexSearchTest"/>
+            <class name="com.github.anninpavel.selenium.test.YandexSearchTest"/>
         </classes>
     </test>
     <test name="FirefoxTest">
         <parameter name="driverType" value="firefox"/>
         <classes>
-            <class name="com.github.anninpavel.selenium.thirdAssignment.YandexSearchTest"/>
+            <class name="com.github.anninpavel.selenium.test.YandexSearchTest"/>
         </classes>
     </test>
 </suite>
