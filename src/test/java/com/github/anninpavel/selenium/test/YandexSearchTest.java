@@ -26,6 +26,8 @@ package com.github.anninpavel.selenium.test;
 
 import com.github.anninpavel.selenium.WebDriverFactory;
 import com.github.anninpavel.selenium.WebDriverType;
+import com.github.anninpavel.selenium.pages.PageScope;
+import com.github.anninpavel.selenium.pages.YandexGeoLocationPage;
 import com.github.anninpavel.selenium.pages.YandexResultPage;
 import com.github.anninpavel.selenium.pages.YandexSearchPage;
 import org.testng.annotations.BeforeClass;
@@ -33,39 +35,59 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 import static org.testng.Assert.assertTrue;
 
 /**
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-public class YandexSearchTest extends BaseTest {
+public final class YandexSearchTest extends BaseTest {
 
     private YandexSearchPage searchPage;
-    private YandexResultPage resultPage;
 
     @Parameters("driverType")
     @BeforeTest
     public void initialization(String driverType) {
-        setDriver(WebDriverFactory.getInstance().getDriver(WebDriverType.requrieDriver(driverType)));
+        final var webDriverType = WebDriverType.requireDriver(driverType);
+        final var webDriver = WebDriverFactory.getInstance().getDriver(webDriverType);
+        setDriver(webDriver);
     }
 
     @BeforeClass
     @Override
     public void setup() {
         super.setup();
-        searchPage = new YandexSearchPage(getDriver(), getDriverWait());
-        resultPage = new YandexResultPage(getDriver(), getDriverWait());
-        searchPage.openPage();
+        final var pageScope = new PageScope(
+                new YandexResultPage(getDriver(), getDriverWait()),
+                new YandexGeoLocationPage(getDriver(), getDriverWait()));
+        searchPage = new YandexSearchPage(getDriver(), getDriverWait(), pageScope);
     }
 
-    @Test
+    @Test(enabled = false)
     public void verifySearch() {
-        searchPage.search("погода пенза");
-        final var resultText = resultPage.getTextOfFirstResult().toString();
+        searchPage.openLitePage();
+        final var resultText = searchPage.search("погода пенза")
+                .getTextOfFirstResult()
+                .toString();
 
         assertTrue(resultText.toLowerCase().contains("погода"),
                 "Поиск подстроки \"погода\" в первом результате поиска");
         assertTrue(resultText.toLowerCase().matches("(.*?)пенз(.*?)"),
                 "Поиск подстроки \"пенза\" в первом результате поиска");
+    }
+
+    @Test
+    public void verifyTabMoreWhenChangeCity() {
+        searchPage.openFullPage();
+
+        searchPage.navigateToGeoLocation().changeCity("Лондон");
+        final var londonTitles = searchPage.getTitleMoreTabs();
+
+        searchPage.navigateToGeoLocation().changeCity("Париж");
+        final var parisTitles = searchPage.getTitleMoreTabs();
+
+        assertTrue(Arrays.equals(londonTitles, parisTitles),
+                "Проверка содержимого влкадки \"ещё\" при изменении города");
     }
 }

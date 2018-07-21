@@ -24,22 +24,26 @@
 
 package com.github.anninpavel.selenium.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-public final class YandexResultPage extends BasePage {
+public class PageScope {
 
-    private final By firstResultField= By.cssSelector("[accesskey=\"1\"]");
+    private final Set<Object> scope;
 
-    public YandexResultPage(WebDriver driver, WebDriverWait driverWait) {
-        super(driver, driverWait);
+    public PageScope(Object... classes) {
+        this.scope = Collections.synchronizedSet(Set.of(classes));
     }
 
-    public CharSequence getTextOfFirstResult() {
-        return readText(firstResultField);
+    @SuppressWarnings("unchecked")
+    public <T> T getPage(Class<T> clazz) {
+        return scope.stream()
+                .filter(clazz::isInstance)
+                .map(o -> (T) o)
+                .findFirst()
+                .orElseThrow();
     }
 }
