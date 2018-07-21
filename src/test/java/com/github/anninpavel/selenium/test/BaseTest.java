@@ -36,11 +36,9 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class BaseTest {
 
-    // Configuration's
     private long implicitlyWaitSecond = 10;
     private long explicitWaitSecond = 5;
-
-    // Component's
+    private long pageLoadSecond = 10;
     private WebDriver driver;
     private WebDriverWait driverWait;
 
@@ -51,7 +49,9 @@ public abstract class BaseTest {
         }
         driverWait = new WebDriverWait(driver, explicitWaitSecond);
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(implicitlyWaitSecond, TimeUnit.SECONDS);
+        driver.manage().timeouts()
+                .implicitlyWait(implicitlyWaitSecond, TimeUnit.SECONDS)
+                .pageLoadTimeout(pageLoadSecond, TimeUnit.SECONDS);
     }
 
     @AfterClass
@@ -90,6 +90,15 @@ public abstract class BaseTest {
 
     public BaseTest setExplicitWaitSecond(long explicitWaitSecond) {
         this.explicitWaitSecond = explicitWaitSecond;
+        return this;
+    }
+
+    public long getPageLoadSecond() {
+        return pageLoadSecond;
+    }
+
+    public BaseTest setPageLoadSecond(long pageLoadSecond) {
+        this.pageLoadSecond = pageLoadSecond;
         return this;
     }
 }

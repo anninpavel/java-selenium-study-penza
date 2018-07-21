@@ -26,8 +26,12 @@ package com.github.anninpavel.selenium.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Pavel Annin (https://github.com/anninpavel).
@@ -42,17 +46,35 @@ public abstract class BasePage {
         this.driverWait = driverWait;
     }
 
-    protected void writeText(final By locator, final CharSequence text) {
-        final var element = driverWait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    protected void replaceText(final By locator, final CharSequence text) {
+        final var element = findElementByLocator(locator);
         element.clear();
         element.sendKeys(text);
     }
 
     protected CharSequence readText(final By locator) {
-        return driverWait.until(ExpectedConditions.presenceOfElementLocated(locator)).getText();
+        return findElementByLocator(locator).getText();
+    }
+
+    protected List<CharSequence> readTexts(final By locator) {
+        return findElementsByLocator(locator).stream()
+                .map(WebElement::getText)
+                .collect(Collectors.toList());
     }
 
     protected void click(final By locator) {
-        driverWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+        findElementByLocator(locator).click();
+    }
+
+    protected void submit(final By locator) {
+        findElementByLocator(locator).submit();
+    }
+
+    protected WebElement findElementByLocator(final By locator) {
+        return driverWait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
+    protected List<WebElement> findElementsByLocator(final By locator) {
+        return driverWait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
     }
 }

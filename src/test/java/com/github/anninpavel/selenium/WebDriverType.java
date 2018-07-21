@@ -34,7 +34,7 @@ public enum WebDriverType {
     CHROME("chrome"),
     FIREFOX("firefox");
 
-    public static WebDriverType requrieDriver(String typeName) {
+    public static WebDriverType requireDriver(String typeName) {
         return Arrays.stream(values())
                 .filter(element -> element.getTypeName().equals(typeName))
                 .findFirst()

@@ -31,46 +31,17 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-public final class YandexSearchPage extends BasePage {
+public final class YandexGeoLocationPage extends BasePage {
 
-    private static final String ENDPOINT_LIGHT = "https://ya.ru/";
-    private static final String ENDPOINT_FULL = "https://yandex.ru/";
+    private final By cityInput = By.id("city__front-input");
+    private final By firstSentenceField = By.className("b-autocomplete-item_type_geo");
 
-    private final PageScope scope;
-
-    private final By queryInput = By.name("text");
-    private final By findButton = By.className("suggest2-form__button");
-    private final By geoLocationField = By.className("geolink");
-    private final By moreLink = By.cssSelector("[data-statlog=\"tabs.more\"]");
-    private final By moreTabsField = By.cssSelector("[role=\"menuitem\"]");
-
-    public YandexSearchPage(final WebDriver driver, final WebDriverWait driverWait, final PageScope pageScope) {
+    public YandexGeoLocationPage(WebDriver driver, WebDriverWait driverWait) {
         super(driver, driverWait);
-        scope = pageScope;
     }
 
-    public void openLitePage() {
-        mDriver.get(ENDPOINT_LIGHT);
-    }
-
-    public void openFullPage() {
-        mDriver.get(ENDPOINT_FULL);
-    }
-
-    public YandexResultPage search(final CharSequence text) {
-        replaceText(queryInput, text);
-        click(findButton);
-        return scope.getPage(YandexResultPage.class);
-    }
-
-    public YandexGeoLocationPage navigateToGeoLocation() {
-        click(geoLocationField);
-        return scope.getPage(YandexGeoLocationPage.class);
-    }
-
-    public CharSequence[] getTitleMoreTabs() {
-        click(moreLink);
-        final var titleTabs = readTexts(moreTabsField);
-        return titleTabs.toArray(new CharSequence[titleTabs.size()]);
+    public void changeCity(final CharSequence cityName) {
+        replaceText(cityInput, cityName);
+        click(firstSentenceField);
     }
 }
