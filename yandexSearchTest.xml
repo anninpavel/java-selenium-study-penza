@@ -30,12 +30,14 @@
         <parameter name="driverType" value="chrome"/>
         <classes>
             <class name="com.github.anninpavel.selenium.test.YandexSearchTest"/>
+            <class name="com.github.anninpavel.selenium.test.YandexMarketTest"/>
         </classes>
     </test>
     <test name="FirefoxTest">
         <parameter name="driverType" value="firefox"/>
         <classes>
             <class name="com.github.anninpavel.selenium.test.YandexSearchTest"/>
+            <class name="com.github.anninpavel.selenium.test.YandexMarketTest"/>
         </classes>
     </test>
 </suite>
