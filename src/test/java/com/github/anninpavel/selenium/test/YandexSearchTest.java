@@ -64,7 +64,7 @@ public final class YandexSearchTest extends BaseTest {
         searchPage = new YandexSearchPage(getDriver(), getDriverWait(), pageScope);
     }
 
-    @Test(enabled = false)
+    @Test
     public void verifySearch() {
         searchPage.openLitePage();
         final var resultText = searchPage.search("погода пенза")
@@ -89,5 +89,15 @@ public final class YandexSearchTest extends BaseTest {
 
         assertTrue(Arrays.equals(londonTitles, parisTitles),
                 "Проверка содержимого влкадки \"ещё\" при изменении города");
+    }
+
+    @Test
+    public void verifyUrlWhenGoTabs() {
+        Arrays.stream(YandexSearchPage.TabType.values()).forEach(tab -> {
+            searchPage.openFullPage();
+            searchPage.navigateTo(tab);
+            assertTrue(getDriver().getCurrentUrl().startsWith(tab.getLink()),
+                    String.format("Проверка валидности url при переходе на вкладку %s.", tab));
+        });
     }
 }

@@ -25,8 +25,10 @@
 package com.github.anninpavel.selenium.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -70,11 +72,31 @@ public abstract class BasePage {
         findElementByLocator(locator).submit();
     }
 
+    protected void moveToElement(final By locator) {
+        final var element = findElementByLocator(locator);
+        moveToElement(element);
+    }
+
+    protected void moveToElement(final WebElement element) {
+        new Actions(mDriver).moveToElement(element)
+                .build()
+                .perform();
+    }
+
+    protected void scrollTo(final By locator) {
+        final var element = findElementByLocator(locator);
+        ((JavascriptExecutor) mDriver).executeScript("arguments[0].scrollIntoView();", element);
+    }
+
     protected WebElement findElementByLocator(final By locator) {
         return driverWait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
 
     protected List<WebElement> findElementsByLocator(final By locator) {
         return driverWait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+    }
+
+    protected void invisibilityElementByLocator(final By locator) {
+        driverWait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
 }

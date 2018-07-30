@@ -56,14 +56,29 @@ public class WebDriverFactory {
     private WebDriverFactory() {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver");
         System.setProperty("webdriver.gecko.driver", "src/test/resources/drivers/geckodriver");
-
         drivers = Collections.synchronizedMap(new EnumMap<>(WebDriverType.class));
-        drivers.putAll(Map.of(
-                WebDriverType.CHROME, new ChromeDriver(),
-                WebDriverType.FIREFOX, new FirefoxDriver()));
     }
 
     public WebDriver getDriver(WebDriverType type) {
-        return drivers.get(type);
+        final var driver = drivers.get(type);
+        if (driver != null) {
+            return driver;
+        } else {
+            synchronized (this) {
+                final WebDriver newDriver;
+                switch (type) {
+                    case CHROME:
+                        newDriver = new ChromeDriver();
+                        break;
+                    case FIREFOX:
+                        newDriver = new FirefoxDriver();
+                        break;
+                    default:
+                        throw new IllegalArgumentException(String.format("Unknown driver type: %s", type));
+                }
+                drivers.put(type, newDriver);
+                return newDriver;
+            }
+        }
     }
 }
